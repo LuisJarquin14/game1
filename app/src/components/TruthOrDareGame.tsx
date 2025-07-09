@@ -51,6 +51,7 @@ const TruthOrDareGame: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
+            className="w-full"
           >
             <GameModeSelector onModeSelect={handleModeSelect} onShowStats={handleShowStats} />
           </motion.div>

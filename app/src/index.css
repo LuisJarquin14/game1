@@ -5,6 +5,12 @@
     box-sizing: border-box;
   }
   
+  html {
+    width: 100vw;
+    height: 100%;
+    overflow-x: hidden;
+  }
+  
   body {
     margin: 0;
     padding: 0;
@@ -14,6 +20,7 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    width: 100%;
   }
 
   body::before {

@@ -1,69 +1,81 @@
-# React + TypeScript + Vite
+# 🎮 Truth or Dare Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Juego interactivo de Verdad o Reto construido con React, TypeScript, Vite y Firebase.
 
-Currently, two official plugins are available:
+## 🌟 Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Diseño responsivo adaptado para dispositivos móviles y de escritorio
+- Múltiples modos de juego: Familiar, Amigos, Adultos y Parejas
+- Animaciones fluidas con Framer Motion
+- Almacenamiento de estadísticas con Firebase
+- Personalización de jugadores y opciones de juego
 
-## Expanding the ESLint configuration
+## 🛠️ Tecnologías
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Build**: Vite
+- **Animations**: Framer Motion
+- **Backend**: Firebase (Firestore, Hosting, Analytics)
+- **Icons**: Lucide React
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Instalación y Desarrollo
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+```bash
+# Instalar dependencias
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Iniciar servidor de desarrollo
+npm run dev
+
+# Construir para producción
+npm run build
+
+# Previsualizar la build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📱 Despliegue
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+La aplicación está desplegada en Firebase Hosting:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **URL de producción**: [https://truth-or-dare-game-3e871.web.app](https://truth-or-dare-game-3e871.web.app)
+
+Para más detalles sobre el despliegue, consulta [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## 🔥 Configuración de Firebase
+
+Este proyecto utiliza Firebase para backend. Para configurar tu propio proyecto:
+
+1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/)
+2. Configura Firestore Database
+3. Actualiza las credenciales en `src/config/firebase.ts`
+
+Para instrucciones detalladas, revisa [FIREBASE_SETUP.md](./FIREBASE_SETUP.md).
+## 🧩 Estructura del Proyecto
+
+```
+app/
+├── public/              # Archivos públicos
+├── src/
+│   ├── assets/          # Imágenes y recursos estáticos
+│   ├── components/      # Componentes React
+│   ├── config/          # Configuración (Firebase, etc.)
+│   ├── data/            # Datos de juego (preguntas/retos)
+│   ├── hooks/           # Custom hooks
+│   ├── types/           # Definiciones de TypeScript
+│   ├── utils/           # Utilidades y funciones auxiliares
+│   ├── App.tsx          # Componente principal
+│   └── main.tsx         # Punto de entrada
+├── DEPLOYMENT.md        # Guía de despliegue
+├── FIREBASE_SETUP.md    # Instrucciones de configuración de Firebase
+└── README.md            # Este archivo
+```
+
+## 📊 CI/CD
+
+Para habilitar despliegue automático al hacer push a `main`, consulta las instrucciones en [DEPLOYMENT.md](./DEPLOYMENT.md) sobre cómo configurar GitHub Actions.
+
+## 📜 Licencia
+
+Este proyecto está bajo la licencia MIT.
 ```
