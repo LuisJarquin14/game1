@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import type { GameSettings, GameCard, Player } from '../types/game';
 import { getCardsByMode } from '../data/cards';
 import { motion } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Shuffle, Settings } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Shuffle, Settings, Users } from 'lucide-react';
+import GameModeIndicator from './GameModeIndicator';
+import GameStats from './GameStats';
 import AdultContentWarning from './AdultContentWarning';
-import { useGameStats } from '../hooks/useGameStats';
 
 interface GameBoardProps {
   gameSettings: GameSettings;
@@ -20,8 +21,15 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameSettings, onBackToSetup, onBa
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [players] = useState<Player[]>(gameSettings.players);
   const [showAdultWarning, setShowAdultWarning] = useState(false);
-  const [gameStartTime] = useState(Date.now());
-  const { saveGameSession } = useGameStats();
+
+  useEffect(() => {
+    // Show adult warning for adults and couples mode
+    if (gameSettings.mode === 'adults' || gameSettings.mode === 'couples') {
+      setShowAdultWarning(true);
+    } else {
+      initializeGame();
+    }
+  }, [gameSettings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const initializeGame = () => {
     const gameCards = getCardsByMode(gameSettings.mode);
@@ -41,15 +49,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameSettings, onBackToSetup, onBa
     setCards(filteredCards);
     drawRandomCard(filteredCards, []);
   };
-
-  useEffect(() => {
-    // Show adult warning for adults and couples mode
-    if (gameSettings.mode === 'adults' || gameSettings.mode === 'couples') {
-      setShowAdultWarning(true);
-    } else {
-      initializeGame();
-    }
-  }, [gameSettings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAcceptAdultWarning = () => {
     setShowAdultWarning(false);
@@ -93,20 +92,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameSettings, onBackToSetup, onBa
     if (navigator.vibrate) {
       navigator.vibrate([30, 50, 30]);
     }
-  };
-
-  const handleBackToMenu = () => {
-    // Save game session before leaving
-    const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
-    saveGameSession(gameSettings, usedCards.length, gameDuration);
-    onBackToMenu();
-  };
-
-  const handleBackToSetup = () => {
-    // Save game session before leaving
-    const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
-    saveGameSession(gameSettings, usedCards.length, gameDuration);
-    onBackToSetup();
   };
 
   const handleReset = () => {
@@ -201,37 +186,75 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameSettings, onBackToSetup, onBa
 
   return (
     <div className="min-h-screen p-4 flex flex-col">
-      {/* Minimal Header */}
-      <div className="flex items-center justify-between mb-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleBackToSetup}
-          className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+          onClick={onBackToSetup}
+          className="flex items-center space-x-2 btn-secondary"
         >
           <ArrowLeft size={20} />
+          <span>Configurar</span>
         </motion.button>
 
-        {/* Enhanced Current Player Indicator */}
-        <div className="player-turn-indicator flex items-center space-x-3 rounded-full px-4 py-2">
-          <div className="text-2xl animate-pulse">{currentPlayer.avatar}</div>
-          <div className="text-lg font-bold text-white drop-shadow-lg">
-            {currentPlayer.name}
-          </div>
+        <div className="text-center">
+          <h1 className="text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+            {getModeTitle()}
+          </h1>
+          <p className="text-sm text-gray-400">
+            Dificultad: {gameSettings.difficulty.min}★ - {gameSettings.difficulty.max}★
+          </p>
         </div>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={handleBackToMenu}
-          className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+          onClick={onBackToMenu}
+          className="btn-secondary"
         >
           <Settings size={20} />
         </motion.button>
       </div>
 
-      {/* Main Card - Takes Most of the Screen */}
-      <div className="flex-1 flex items-center justify-center py-8">
+      {/* Game Mode Indicator */}
+      <div className="mb-6">
+        <GameModeIndicator mode={gameSettings.mode} difficulty={gameSettings.difficulty} />
+      </div>
+
+      {/* Current Player */}
+      <div className="text-center mb-6">
+        <div className="glass-morphism rounded-xl p-4 max-w-md mx-auto">
+          <div className="flex items-center justify-center space-x-3 mb-2">
+            <Users size={20} className="text-purple-400" />
+            <span className="text-lg font-semibold">Turno de:</span>
+          </div>
+          <div className="flex items-center justify-center space-x-3 mb-2">
+            <div className="text-3xl">{currentPlayer.avatar}</div>
+            <div className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+              {currentPlayer.name}
+            </div>
+          </div>
+          {gameSettings.mode === 'adults' || gameSettings.mode === 'couples' ? (
+            <div className="text-sm text-gray-400">
+              {currentPlayer.age} años
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Game Stats */}
+      <div className="mb-6">
+        <GameStats 
+          players={players.length}
+          usedCards={usedCards.length}
+          totalCards={cards.length}
+          currentDifficulty={currentCard.difficulty}
+        />
+      </div>
+
+      {/* Main Card */}
+      <div className="flex-1 flex items-center justify-center">
         <div className="game-card" onClick={handleCardFlip}>
           <motion.div
             className={`game-card-inner ${isFlipped ? 'flipped' : ''}`}
@@ -309,32 +332,60 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameSettings, onBackToSetup, onBa
         </div>
       </div>
 
-      {/* Minimal Bottom Controls */}
-      <div className="flex justify-center space-x-6 pb-4">
+      {/* Player List */}
+      <div className="mb-6">
+        <div className="flex justify-center">
+          <div className="glass-morphism rounded-xl p-4 max-w-4xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {players.map((player, index) => (
+                <div
+                  key={player.id}
+                  className={`text-center p-3 rounded-lg transition-all ${
+                    index === currentPlayerIndex
+                      ? 'player-active'
+                      : 'player-inactive'
+                  }`}
+                >
+                  <div className="text-2xl mb-1">{player.avatar}</div>
+                  <div className="font-semibold text-sm">{player.name}</div>
+                  {(gameSettings.mode === 'adults' || gameSettings.mode === 'couples') && (
+                    <div className="text-xs text-gray-400">{player.age} años</div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Controls */}
+      <div className="flex justify-center space-x-4">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleReset}
-          className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors flex items-center space-x-2"
+          className="btn-secondary flex items-center space-x-2"
         >
           <RotateCcw size={20} />
-          <span className="hidden sm:inline">Reiniciar</span>
+          <span>Reiniciar</span>
         </motion.button>
 
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleNextCard}
-          className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full hover:from-purple-600 hover:to-pink-600 transition-all flex items-center space-x-2 font-semibold"
+          className="btn-primary flex items-center space-x-2"
         >
           <Shuffle size={20} />
-          <span>Siguiente</span>
+          <span>Siguiente Carta</span>
         </motion.button>
       </div>
 
-      {/* Subtle Instructions */}
-      <div className="text-center text-gray-500 text-sm pb-2">
-        Toca la carta para revelar
+      {/* Instructions */}
+      <div className="text-center mt-6 text-gray-400">
+        <p className="text-sm">
+          Toca la carta para revelar • Usa "Siguiente Carta" para continuar al siguiente jugador
+        </p>
       </div>
     </div>
   );

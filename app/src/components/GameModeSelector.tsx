@@ -1,13 +1,14 @@
 import React from 'react';
 import type { GameMode } from '../types/game';
 import { motion } from 'framer-motion';
-import { Users, Heart, Zap, UserCheck } from 'lucide-react';
+import { Users, Heart, Zap, UserCheck, BarChart3 } from 'lucide-react';
 
 interface GameModeSelectorProps {
   onModeSelect: (mode: GameMode) => void;
+  onShowStats?: () => void;
 }
 
-const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onModeSelect }) => {
+const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onModeSelect, onShowStats }) => {
   const gameModes = [
     {
       id: 'family' as GameMode,
@@ -252,6 +253,26 @@ const GameModeSelector: React.FC<GameModeSelectorProps> = ({ onModeSelect }) => 
             </div>
           </div>
         </div>
+        
+        {/* Stats Button */}
+        {onShowStats && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
+            className="flex justify-center mb-6"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onShowStats}
+              className="glass-morphism px-6 py-3 rounded-full flex items-center space-x-2 text-purple-400 hover:text-purple-300 transition-colors"
+            >
+              <BarChart3 size={20} />
+              <span>Ver Estadísticas</span>
+            </motion.button>
+          </motion.div>
+        )}
         
         <p className="text-sm text-gray-400">
           ⚠️ Juega responsablemente. Los modos 18+ requieren verificación de edad y consentimiento.

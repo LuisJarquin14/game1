@@ -3,9 +3,10 @@ import type { GameMode, GameSettings } from '../types/game';
 import GameModeSelector from './GameModeSelector';
 import GameSetup from './GameSetup';
 import GameBoard from './GameBoard';
+import StatsComponent from './StatsComponent';
 import { motion, AnimatePresence } from 'framer-motion';
 
-type GamePhase = 'mode-selection' | 'setup' | 'playing';
+type GamePhase = 'mode-selection' | 'setup' | 'playing' | 'stats';
 
 const TruthOrDareGame: React.FC = () => {
   const [gamePhase, setGamePhase] = useState<GamePhase>('mode-selection');
@@ -32,6 +33,14 @@ const TruthOrDareGame: React.FC = () => {
     setGamePhase('setup');
   };
 
+  const handleShowStats = () => {
+    setGamePhase('stats');
+  };
+
+  const handleBackFromStats = () => {
+    setGamePhase('mode-selection');
+  };
+
   return (
     <div className="min-h-screen text-white overflow-hidden">
       <AnimatePresence mode="wait">
@@ -43,7 +52,7 @@ const TruthOrDareGame: React.FC = () => {
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
           >
-            <GameModeSelector onModeSelect={handleModeSelect} />
+            <GameModeSelector onModeSelect={handleModeSelect} onShowStats={handleShowStats} />
           </motion.div>
         )}
 
@@ -76,6 +85,30 @@ const TruthOrDareGame: React.FC = () => {
               onBackToSetup={handleBackToSetup}
               onBackToMenu={handleBackToModeSelection}
             />
+          </motion.div>
+        )}
+
+        {gamePhase === 'stats' && (
+          <motion.div
+            key="stats"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen flex flex-col items-center justify-center p-4"
+          >
+            <div className="max-w-6xl w-full">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleBackFromStats}
+                className="mb-6 btn-secondary flex items-center space-x-2"
+              >
+                <span>← Volver al Menú</span>
+              </motion.button>
+              
+              <StatsComponent />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
