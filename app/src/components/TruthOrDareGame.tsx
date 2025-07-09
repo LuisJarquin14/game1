@@ -4,6 +4,7 @@ import GameModeSelector from './GameModeSelector';
 import GameSetup from './GameSetup';
 import GameBoard from './GameBoard';
 import StatsComponent from './StatsComponent';
+import AdaptiveContainer from './AdaptiveContainer';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type GamePhase = 'mode-selection' | 'setup' | 'playing' | 'stats';
@@ -51,6 +52,7 @@ const TruthOrDareGame: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.5 }}
+            className="w-full"
           >
             <GameModeSelector onModeSelect={handleModeSelect} onShowStats={handleShowStats} />
           </motion.div>
