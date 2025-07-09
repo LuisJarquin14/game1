@@ -4,7 +4,6 @@ import GameModeSelector from './GameModeSelector';
 import GameSetup from './GameSetup';
 import GameBoard from './GameBoard';
 import StatsComponent from './StatsComponent';
-import AdaptiveContainer from './AdaptiveContainer';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type GamePhase = 'mode-selection' | 'setup' | 'playing' | 'stats';

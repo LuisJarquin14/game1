@@ -10,13 +10,6 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
-  css: {
-    preprocessorOptions: {
-      css: {
-        charset: false,
-      }
-    }
-  },
   server: {
     host: true,
     port: 3000,
